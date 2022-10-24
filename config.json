@@ -1,0 +1,34 @@
+{
+    "nome": "Rafa",
+    "acoes": [
+        {
+            "nome": "listar",
+            "objetos": [
+                "pedidos",
+                "menu",
+                "faturamento"
+            ]
+        },
+        {
+            "nome": "vou",
+            "objetos": [
+                "querer",
+                "pedir"
+            ]
+        },
+        {
+            "nome": "quero",
+            "objetos": [
+                "encerrar",
+                "fechar",
+                "pagar"
+            ]
+        },
+        {
+            "nome": "sair",
+            "objetos": [
+                "até mais"
+            ]
+        }
+    ]
+}

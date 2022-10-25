@@ -1,3 +1,0 @@
-pyaudio
-ibm-watson
-nltk

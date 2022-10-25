@@ -131,6 +131,9 @@ def retornarNumero(txt):
         return 10
 def executar_comando(acao, objeto):
     global PEDIDOS
+    
+    
+    
     if(acao == 'listar'):
         if(objeto == 'menu'):
             # Cardápio
@@ -188,20 +191,21 @@ if __name__ == '__main__':
             if ESTAGE == 0:
                 print("Olá, no que posso ajudar?")
                 # simula o comando de voz para pedir o cardápio
-                comando = "rafa listar menu"
+                #comando = "rafa listar menu"
             if ESTAGE == 1:
                 print("O que você vai querer?")
                 # simula um comando de voz para fazer um pedido
-                comando = "vou querer 1 coxinha"
+                #comando = "vou querer 1 coxinha"
             if ESTAGE == 2:
                 # simula o comando de voz para encerrar o pedido
-                comando = "quero encerrar pedido"
+                #comando = "quero encerrar pedido"
                 
                 # para o teste executar apenas uma vez
                 CONTINUAR = False
                 
             # para realizar testes comentar o comando a baixo já que não será recebido nenhum comando por voz
-            #comando = escutar_comando()
+            comando = escutar_comando()
+            
             print("----------------------------------------")
             print("O comando recebido foi>>"+str(comando))
             print("----------------------------------------")

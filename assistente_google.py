@@ -37,7 +37,7 @@ def escutar_comando():
     with sr.Microphone() as fonte_audio:
         reconhecedor.adjust_for_ambient_noise(fonte_audio)
         
-        print("Fale alguma coisa...")        
+        print("Aguardando comando")        
         fala = reconhecedor.listen(fonte_audio, timeout=5, phrase_time_limit=5)
         try:
             comando = reconhecedor.recognize_google(fala, language=IDIOMA_FALA)
@@ -68,10 +68,8 @@ def tokenizar_comando(comando):
     tokens = word_tokenize(comando, IDIOMA_CORPUS)
     if tokens:
         tokens = eliminar_palavras_de_parada(tokens)
-        #print(tokens)
         
-        
-        if tokens[0] == nome_assistente:
+        if tokens[0].lower() == nome_assistente.lower():
             acao = tokens[1].lower()
             objeto = tokens[2].lower()  
         else:
@@ -82,8 +80,7 @@ def tokenizar_comando(comando):
                         objeto = str(objeto) + " " + str(tk)
                     if x == 1:
                         objeto = tokens[1]
-                       # objeto = str(objeto)
-                                  
+                       # objeto = str(objeto)                            
     
     return acao, objeto
     
@@ -94,7 +91,7 @@ def validar_comando(acao, objeto):
     valido = False
     
     if acao and objeto:
-
+        
         for acaoCadastrada in acoes:
             if acao == acaoCadastrada["nome"]:
                 if objeto in acaoCadastrada["objetos"]:
@@ -133,10 +130,11 @@ def retornarNumero(txt):
     if txt == 'dez':
         return 10
 def executar_comando(acao, objeto):
-    
+    global PEDIDOS
     if(acao == 'listar'):
         if(objeto == 'menu'):
-            
+            # Cardápio
+            print("---------------------------------------------------")
             print("--- Menu ---")
             print("_____________________________________________")
             print("Quibe -> R$1,00")
@@ -145,55 +143,77 @@ def executar_comando(acao, objeto):
             print("_____________________________________________")
             print("pastel -> R$2,00")
             print("_____________________________________________")
+            print("---------------------------------------------------")
             return 1
     
     if( acao == 'vou'):
         if( objeto.split(" ")[0] == "querer"):
-                print("PEDIDO>>"+str(objeto))
-                print("Seu item foi adicionado, vai querer mais alguma coisa?")
+                print("PEDIDO>>"+str(objeto.split(" ")[1]+" "+str(objeto.split(" ")[2])))
+                # adicionar os pedidos em um array que posteriormente seria feito um loop para somar 
+                PEDIDOS.append([objeto.split("querer")[1],1])
+                
+                # em um chatbot haveria uma condicional para ficar em loop até que não exista mais pedidos
+                #print("Seu item foi adicionado, vai querer mais alguma coisa?")
+                
                 return 2
         else:
             pass
     if acao == "quero":
-        if( objeto.split(" ")[0] == "fechar"):
-                print("Seu pedido foi finalizado")
-                
-                for item,n in enumerate(PEDIDOS):
-                    valor = int(valor) + int(n)    
+        if( objeto.split(" ")[0] == "encerrar"):
+                print("Seu pedido foi finalizado!!")
+                valor = 0
+                # somatório dos pedidos
+                for pedido in PEDIDOS:
+                    valor = valor + int(pedido[1] )
                     
-                print("O valor total foi de:"+str(valor))
+                print("O valor total foi de: "+str(valor))
+                # reseta os pedidos
+                PEDIDOS = []
                 return 0
         else:
-            pass
-           
-    
+            return 0
     if(acao == 'adicionando'):
         pass
 
 if __name__ == '__main__':
+    # inicialização base do programa
     iniciar()
+    # variavel para controle de estágio -> similar a um chatterbot
     ESTAGE = 0
-    continuar = True
-    while continuar:
+    # flag de controle
+    CONTINUAR = True
+    while CONTINUAR:
         try:
             
             if ESTAGE == 0:
                 print("Olá, no que posso ajudar?")
+                # simula o comando de voz para pedir o cardápio
+                comando = "rafa listar menu"
             if ESTAGE == 1:
                 print("O que você vai querer?")
+                # simula um comando de voz para fazer um pedido
+                comando = "vou querer 1 coxinha"
             if ESTAGE == 2:
-                pass
-            comando = escutar_comando()
-            print(f"processando o comando: {comando}")
+                # simula o comando de voz para encerrar o pedido
+                comando = "quero encerrar pedido"
+                
+                # para o teste executar apenas uma vez
+                CONTINUAR = False
+                
+            # para realizar testes comentar o comando a baixo já que não será recebido nenhum comando por voz
+            #comando = escutar_comando()
+            print("----------------------------------------")
+            print("O comando recebido foi>>"+str(comando))
+            print("----------------------------------------")
 
             if comando:
-                acao, objeto = tokenizar_comando(comando)
-                valido = validar_comando(acao, objeto)
-                if valido:
-                    ESTAGE = executar_comando(acao, objeto)
+                acao, tipo = tokenizar_comando(comando)
+                VALIDO = validar_comando(acao, tipo)
+                if VALIDO:
+                    ESTAGE = executar_comando(acao, tipo)
                 else:
                     print("Não entendi o comando. Repita, por favor!")
         except KeyboardInterrupt:
-            print("Tchau!")
+            print("Volte sempre!")
 
             continuar = False
